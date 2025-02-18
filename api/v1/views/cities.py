@@ -9,6 +9,7 @@ from models.city import City
 from models.state import State
 from api.v1.views import app_views
 
+
 @app_views.route('/states/<state_id>/cities', methods=['GET'])
 def get_cities_by_state(state_id):
     """Retrieve all City objects of a given State"""
