@@ -4,6 +4,7 @@ Flask application setup for the HBNB API
 """
 
 from flask import Flask, jsonify
+from flask_cors import CORS
 from models import storage
 from api.v1.views import app_views
 import os
@@ -13,6 +14,8 @@ app = Flask(__name__)
 
 # Register the blueprint
 app.register_blueprint(app_views)
+
+CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
