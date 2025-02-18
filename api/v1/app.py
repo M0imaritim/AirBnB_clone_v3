@@ -14,10 +14,12 @@ app = Flask(__name__)
 # Register the blueprint
 app.register_blueprint(app_views)
 
+
 @app.teardown_appcontext
 def teardown_appcontext(exception):
     """Close the storage session after each request"""
     storage.close()
+
 
 if __name__ == "__main__":
     # Get host and port from environment variables or use defaults
