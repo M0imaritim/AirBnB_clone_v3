@@ -21,6 +21,7 @@ else:
 
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
+
     if models.storage_t == "db":
         id = Column(String(60), primary_key=True)
         created_at = Column(DateTime, default=datetime.utcnow)
@@ -58,18 +59,29 @@ class BaseModel:
         models.storage.new(self)
         models.storage.save()
 
-    def to_dict(self):
-        """returns a dictionary containing all keys/values of the instance"""
+    def to_dict(self, for_storage=False):
+        """
+        Returns a dictionary containing all keys/values of the instance.
+        - Removes `_sa_instance_state` for SQLAlchemy objects.
+        - Removes `password` unless for FileStorage (for_storage=True).
+        """
         new_dict = self.__dict__.copy()
         if "created_at" in new_dict:
             new_dict["created_at"] = new_dict["created_at"].strftime(time)
         if "updated_at" in new_dict:
             new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
+
         new_dict["__class__"] = self.__class__.__name__
-        if "_sa_instance_state" in new_dict:
-            del new_dict["_sa_instance_state"]
+
+        # Remove SQLAlchemy instance state
+        new_dict.pop("_sa_instance_state", None)
+
+        # Remove password unless explicitly storing
+        if not for_storage:
+            new_dict.pop("password", None)
+
         return new_dict
 
     def delete(self):
-        """delete the current instance from the storage"""
+        """Deletes the current instance from storage"""
         models.storage.delete(self)
